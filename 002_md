@@ -1,0 +1,135 @@
+
+## 1. Streszczenie i Kluczowe Wnioski
+
+Niniejszy raport analizuje problem wyznaczania permutacji zbioru skończonego, które nie posiadają punktów stałych. W literaturze matematycznej obiekty te znane są jako **nieporządki** (ang. *derangements*) lub podsilnie. Raport przedstawia dokładne rozwiązanie dla zbioru 5-elementowego, wykorzystując Zasadę Włączeń i Wyłączeń oraz analizę struktury cyklowej, a następnie uogólnia tę metodę do zbioru 100-elementowego, wskazując na fundamentalny związek z liczbą Eulera ($e$).
+
+### Kluczowe punkty:
+*   **Rozwiązanie dla n=5:** Istnieją dokładnie **44** bijekcje zbioru $\{1, 2, 3, 4, 5\}$ bez punktów stałych. Stanowi to około 36,67% wszystkich możliwych permutacji tego zbioru.
+*   **Struktura rozwiązań:** Dla $n=5$ nieporządki dzielą się na dwie rozłączne klasy oparte na strukturze cykli: cykle długości 5 (24 sztuki) oraz złożenia cyklu długości 3 z cyklem długości 2 (20 sztuk).
+*   **Metoda generalizacji:** Liczbę nieporządków $D_n$ (lub $!n$) dla dowolnego $n$ wyznacza się ze wzoru opartego na szeregu naprzemiennym: $D_n = n! \sum_{k=0}^{n} \frac{(-1)^k}{k!}$.
+*   **Asymptotyka dla n=100:** Dla dużych $n$, wartość $D_n$ dąży do $n!/e$. Dla $n=100$, liczba nieporządków jest najbliższą liczbą całkowitą wartości $100!/e$. Prawdopodobieństwo wylosowania takiej bijekcji jest niemal stałe i wynosi $1/e \approx 0.3679$.
+
+---
+
+## 2. Podstawy Teoretyczne i Definicje
+
+Aby precyzyjnie rozwiązać problem, musimy zdefiniować przestrzeń rozwiązań.
+
+### 2.1. Bijekcja i Permutacja
+Bijekcja zbioru skończonego $A$ na ten sam zbiór jest nazywana **permutacją**. Zbiór wszystkich permutacji zbioru $n$-elementowego oznaczamy jako $S_n$, a jego liczność wynosi $n!$ (silnia) [1][2].
+Dla $n=5$, liczba wszystkich bijekcji wynosi:
+$$|S_5| = 5! = 120$$
+
+### 2.2. Nieporządek (Derangement)
+Punktem stałym permutacji $\sigma$ jest taki element $x$, dla którego $\sigma(x) = x$. Szukamy permutacji, które nie mają takich punktów. Formalnie definiujemy zbiór nieporządków $D_n$ jako:
+$$D_n = \{ \sigma \in S_n : \forall i \in \{1, \dots, n\}, \sigma(i) \neq i \}$$
+W literaturze problem ten jest często ilustrowany jako "problem sekretarki" (która wkłada listy do niewłaściwych kopert) lub "problem szatni" [5][6].
+
+---
+
+## 3. Szczegółowe Rozwiązanie dla Zbioru 5-elementowego
+
+Zadanie polega na wyznaczeniu wszystkich bijekcji zbioru $A = \{1, 2, 3, 4, 5\}$ bez punktów stałych.
+
+### 3.1. Obliczenie liczby rozwiązań (Zasada Włączeń i Wyłączeń)
+Stosując Zasadę Włączeń i Wyłączeń, odejmujemy od wszystkich permutacji te, które mają co najmniej jeden punkt stały, dodajemy te z dwoma, odejmujemy z trzema, itd. Prowadzi to do wzoru [5][10]:
+
+$$D_5 = 5! \left( \frac{1}{0!} - \frac{1}{1!} + \frac{1}{2!} - \frac{1}{3!} + \frac{1}{4!} - \frac{1}{5!} \right)$$
+
+Podstawiając wartości silni:
+$$D_5 = 120 \left( 1 - 1 + \frac{1}{2} - \frac{1}{6} + \frac{1}{24} - \frac{1}{120} \right)$$
+$$D_5 = 120 - 120 + 60 - 20 + 5 - 1$$
+$$D_5 = 44$$
+
+**Wynik:** Istnieją **44** takie bijekcje.
+
+### 3.2. Wyznaczanie (konstrukcja) bijekcji poprzez struktury cyklowe
+Samo podanie liczby nie jest pełnym "wyznaczeniem". Jako badacz muszę przeanalizować strukturę tych 44 permutacji. Każda permutacja rozkłada się na rozłączne cykle. Warunek braku punktów stałych oznacza **brak cykli długości 1**.
+
+Dla $n=5$ możliwe podziały liczby 5 na składniki $\ge 2$ to:
+1.  **Typ 5:** Jeden cykl długości 5 (np. $1 \to 2 \to 3 \to 4 \to 5 \to 1$).
+2.  **Typ 3+2:** Jeden cykl długości 3 i jeden cykl długości 2 (np. $1 \to 2 \to 3 \to 1$ oraz $4 \to 5 \to 4$).
+
+#### Analiza ilościowa podtypów:
+*   **Liczba cykli długości 5:** Wzór to $(n-1)!$.
+    $$(5-1)! = 24$$
+*   **Liczba cykli typu 3+2:** Wybieramy 2 elementy z 5 na $\binom{5}{2}=10$ sposobów. Tworzą one cykl na 1 sposób. Pozostałe 3 elementy tworzą cykl na $(3-1)!=2$ sposoby.
+    $$10 \times 1 \times 2 = 20$$
+
+Suma: $24 + 20 = 44$. Zgadza się z wynikiem ogólnym.
+
+### 3.3. Przykłady reprezentatywne
+Zamiast wypisywać 44 linie, przedstawiam schemat generowania wszystkich rozwiązań:
+
+**Przykłady z grupy "Cykle 5-elementowe" (24 sztuki):**
+Zapis cyklowy: $(1, 2, 3, 4, 5)$ $\implies$ Zapis dwuwierszowy: $\begin{pmatrix} 1 & 2 & 3 & 4 & 5 \\ 2 & 3 & 4 & 5 & 1 \end{pmatrix}$
+Zapis cyklowy: $(1, 5, 4, 3, 2)$ $\implies$ Zapis dwuwierszowy: $\begin{pmatrix} 1 & 2 & 3 & 4 & 5 \\ 5 & 1 & 4 & 3 & 2 \end{pmatrix}$
+
+**Przykłady z grupy "Cykle 3+2" (20 sztuk):**
+Zapis cyklowy: $(1, 2, 3)(4, 5)$ $\implies$ Zapis dwuwierszowy: $\begin{pmatrix} 1 & 2 & 3 & 4 & 5 \\ 2 & 3 & 1 & 5 & 4 \end{pmatrix}$
+Zapis cyklowy: $(1, 5)(2, 4, 3)$ $\implies$ Zapis dwuwierszowy: $\begin{pmatrix} 1 & 2 & 3 & 4 & 5 \\ 5 & 4 & 2 & 3 & 1 \end{pmatrix}$
+
+---
+
+## 4. Uogólnienie Metody dla Zbioru 100-elementowego
+
+User zapytał o zauważalność metody uogólnienia. Przejście do $n=100$ wymaga zmiany podejścia z czystej enumeracji na metody analityczne i asymptotyczne, ponieważ $100!$ jest liczbą rzędu $10^{157}$.
+
+### 4.1. Wzór Ogólny i Rekurencja
+Dla dowolnego $n$, liczba nieporządków $D_n$ (często oznaczana jako podsilnia $!n$) wyraża się wzorem zamkniętym [5][7]:
+$$D_n = n! \sum_{k=0}^{n} \frac{(-1)^k}{k!}$$
+
+Dodatkowo, dla celów obliczeniowych (np. programistycznych), można użyć relacji rekurencyjnych, które pozwalają unikać operacji na ułamkach [17][19]:
+1.  $D_n = (n-1)(D_{n-1} + D_{n-2})$
+2.  $D_n = n D_{n-1} + (-1)^n$
+
+### 4.2. Analiza Asymptotyczna (Związek z liczbą $e$)
+Kluczowym uogólnieniem dla dużych $n$ (takich jak 100) jest zauważenie związku sumy częściowej z rozwinięciem funkcji $e^x$ w szereg Taylora dla $x=-1$:
+$$e^{-1} = \sum_{k=0}^{\infty} \frac{(-1)^k}{k!} = \frac{1}{0!} - \frac{1}{1!} + \frac{1}{2!} - \dots$$
+
+Ponieważ $D_n = n! \times (\text{częściowa suma szeregu } e^{-1})$, dla dużych $n$ zachodzi niezwykle precyzyjne przybliżenie:
+$$D_n \approx \frac{n!}{e}$$
+
+Dla $n=100$, błąd tego przybliżenia jest rzędu $\frac{1}{101}$, co jest wartością zaniedbywalnie małą w kontekście liczb całkowitych.
+
+### 4.3. Twierdzenie o Najbliższej Liczbie Całkowitej
+Dla każdego $n \ge 1$, liczba nieporządków jest równa [21]:
+$$D_n = \left[ \frac{n!}{e} \right]$$
+gdzie nawiasy oznaczają zaokrąglenie do najbliższej liczby całkowitej (funkcja *nearest integer*).
+
+Dla $n=100$:
+$$D_{100} = \text{round}\left( \frac{100!}{e} \right)$$
+Wartość ta wynosi w przybliżeniu $3.433 \times 10^{157}$.
+
+---
+
+## 5. Tabela Zestawienia Danych
+
+Poniższa tabela ilustruje szybkość zbieżności metody przybliżonej do wartości dokładnych. Należy zwrócić uwagę, że dla $n=5$ przybliżenie $n!/e$ jest już bardzo bliskie wynikowi dokładnemu.
+
+| Zbiór ($n$) | Liczba permutacji ($n!$) | Wzór przybliżony ($n!/e$) | Wartość dokładna ($D_n$) | Błąd względny |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | 1 | 0.367... | **0** | - |
+| **2** | 2 | 0.735... | **1** | 26% |
+| **3** | 6 | 2.207... | **2** | 10% |
+| **4** | 24 | 8.829... | **9** | 1.9% |
+| **5** | **120** | **44.145...** | **44** | **0.3%** |
+| ... | ... | ... | ... | ... |
+| **100** | $\approx 9.33 \times 10^{157}$ | $\approx 3.43 \times 10^{157}$ | $\left[ \frac{100!}{e} \right]$ | $< 10^{-150}$ |
+
+---
+
+## 6. Podsumowanie Rozwiązania Problemu
+
+1.  **Dla zbioru {1, 2, 3, 4, 5}:** Zidentyfikowałem **44** bijekcje bez punktów stałych. Można je skonstruować tworząc wyłącznie cykle długości 5 lub pary cykli długości 3 i 2.
+2.  **Uogólnienie dla n=100:** Metoda "zauważalna" w tym procesie to zastosowanie szeregu zbieżnego do $1/e$. Zamiast żmudnego zliczania przypadków, dla $n=100$ stosujemy prawo, że frakcja nieporządków w zbiorze wszystkich permutacji jest stała i wynosi $1/e$.
+
+## Źródła
+
+Raport oparto na zweryfikowanych źródłach matematycznych dotyczących kombinatoryki enumeracyjnej i teorii grup.
+
+*   **Definicje i permutacje:** [Wikipedia - Permutation](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFEVrBkjdxmYBVJ1VqCkcwQFB8ljx_yV4hTXWKre7nIhIVlMpubF881RMyGTb0BhGT6A4PAVsRN4axNxnXsiEabq-xRWPr5iKwFhF5cUaMBj7FH3pY0Ew6e7yBy-OqgfJ5AIEzO_0a97wXUeG6J69gbM4k=) [1], [Math.edu.pl](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEtazn5UDb6JH_XJeIW6mFJxIrnzd4eb9kIEusQLK65Nmryim29lU2fajGe2E99co_C1hYTQfuQ3SQp-CDnjW9euPWIw_04BBJTOZL5o_LWwGmDw0PThn5V) [2].
+*   **Nieporządki i Zasada Włączeń-Wyłączeń:** [Uni Wroc - Kombinatoryka](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFc13l-RwQfG1bgHDjQSPcBRWIFS-dTl2qG60MzRyOdIVH-1JOGrHv8XUO8JPJC4v_XBMs0s9zxgEc8KpAeU5LXlTfYsiswoLILBVBvE-O0p4VsFwvZFXsi_5421QUjAIK4Bxc5ySx1C2aUP0crBw6QnnV37fg1T4E=) [5], [MIMUW](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGYxDgF92LMIs3ps0VM0aqIC5WilgBUZRXytIDlFpJwAkz4UAlszmSLEt8sYYsE0wV5JyxiFD7Ykde7vWG0wAIGmkR1OBae7q3SJxyPxLdbqBMF2UUVfvFlNPaMbEp2dLYAjXQGBb9yXeNyaUWbjimNMeuT) [10], [Justapedia - Derangement](https://justapedia.org/wiki/Derangement#:~:text=In%20combinatorial%20mathematics%2C%20a%20derangement,that%20has%20no%20fixed%20points).
+*   **Wzory Rekurencyjne:** [PlanetMath](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEj2YAjww3YbZA2_v2jRdZuc_JO08ll6MvdLST6RfbGWyIqkcdnvl9znjPaD9vVAExtOFHNVFP-2ag2I0sI6mnNJ0XVHkSG2nXHqkwDru_NdqVhGAkLx9hLz_Yj76-ltQ9AVso9HBj5-QyY2wKa8aX42VT5vw==) [17], [Math.ca](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG_HZQVrmIwLFUpUB9uGbkF5R5sCJLl7BOkWy0LK_Frpeiz48UAb_dKON6ll6ZXmQuM-NJ_09AT4rpjUZWX8Uv5GZiLefHNYPM7cIr6BHRFJ6w0vi665fi-dIforU5WGqOk9YChXMltjjeNtPNz0A==) [19].
+*   **Asymptotyka i przybliżenia:** [StackExchange Math](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGxaWAyA4WLJHzfUZNYeqFIKClPUI2RATelEiY7bLDzJh5d83QfpHAoOfx68emKwabOyvVWXFSB49_k4qPQyK9txmiZh9s4BA7cMtzeLIBC1cw6hwydJrgguzTZQiOvXgFgwlYgcaf3c2yma8kRR9hhuurQ75zhAZrQu3JVD1nsADrQ2BxGj8faDvk-aqnhFw3x0tdZYWSBaok83TvWGP50Dg4O52TeoeajjJW2MxAKMg==) [21], [MathOnline](https://mathonline.wikidot.com/estimating-the-number-of-derangements-of-elements-from-a-fin#:~:text=).
+*   **Sekwencje liczbowe (OEIS):** [OEIS A000166](https://oeis.org/wiki/Number_of_derangements#:~:text=,481066515734%2C%207697064251745%2C%20130850092279664%2C%202355301661033953%2C).
